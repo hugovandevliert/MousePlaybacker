@@ -34,11 +34,15 @@ namespace RecordAndPlayMouse
             this.lblInfo1 = new System.Windows.Forms.Label();
             this.lblInfo2 = new System.Windows.Forms.Label();
             this.lblInfo3 = new System.Windows.Forms.Label();
+            this.nudSecondsRepeat = new System.Windows.Forms.NumericUpDown();
+            this.lblRepeatInfo1 = new System.Windows.Forms.Label();
+            this.lblRepeatInfo2 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSecondsRepeat)).BeginInit();
             this.SuspendLayout();
             // 
             // BtnRecord
             // 
-            this.BtnRecord.Location = new System.Drawing.Point(171, 27);
+            this.BtnRecord.Location = new System.Drawing.Point(263, 42);
             this.BtnRecord.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.BtnRecord.Name = "BtnRecord";
             this.BtnRecord.Size = new System.Drawing.Size(100, 35);
@@ -71,12 +75,40 @@ namespace RecordAndPlayMouse
             this.lblInfo3.TabIndex = 4;
             this.lblInfo3.Text = "3. Press F10 to stop playback";
             // 
+            // nudSecondsRepeat
+            // 
+            this.nudSecondsRepeat.Location = new System.Drawing.Point(273, 7);
+            this.nudSecondsRepeat.Name = "nudSecondsRepeat";
+            this.nudSecondsRepeat.Size = new System.Drawing.Size(81, 27);
+            this.nudSecondsRepeat.TabIndex = 5;
+            // 
+            // lblRepeatInfo1
+            // 
+            this.lblRepeatInfo1.AutoSize = true;
+            this.lblRepeatInfo1.Location = new System.Drawing.Point(169, 9);
+            this.lblRepeatInfo1.Name = "lblRepeatInfo1";
+            this.lblRepeatInfo1.Size = new System.Drawing.Size(98, 20);
+            this.lblRepeatInfo1.TabIndex = 6;
+            this.lblRepeatInfo1.Text = "Repeat every:";
+            // 
+            // lblRepeatInfo2
+            // 
+            this.lblRepeatInfo2.AutoSize = true;
+            this.lblRepeatInfo2.Location = new System.Drawing.Point(360, 9);
+            this.lblRepeatInfo2.Name = "lblRepeatInfo2";
+            this.lblRepeatInfo2.Size = new System.Drawing.Size(62, 20);
+            this.lblRepeatInfo2.TabIndex = 7;
+            this.lblRepeatInfo2.Text = "seconds";
+            // 
             // FormUI
             // 
             this.AcceptButton = this.BtnRecord;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 86);
+            this.ClientSize = new System.Drawing.Size(434, 86);
+            this.Controls.Add(this.lblRepeatInfo2);
+            this.Controls.Add(this.lblRepeatInfo1);
+            this.Controls.Add(this.nudSecondsRepeat);
             this.Controls.Add(this.lblInfo3);
             this.Controls.Add(this.lblInfo2);
             this.Controls.Add(this.lblInfo1);
@@ -90,7 +122,9 @@ namespace RecordAndPlayMouse
             this.ShowIcon = false;
             this.Text = "MouseClicker";
             this.TopMost = true;
+            ((System.ComponentModel.ISupportInitialize)(this.nudSecondsRepeat)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -99,6 +133,9 @@ namespace RecordAndPlayMouse
         private System.Windows.Forms.Label lblInfo1;
         private System.Windows.Forms.Label lblInfo2;
         private System.Windows.Forms.Label lblInfo3;
+        private System.Windows.Forms.NumericUpDown nudSecondsRepeat;
+        private System.Windows.Forms.Label lblRepeatInfo1;
+        private System.Windows.Forms.Label lblRepeatInfo2;
     }
 }
 

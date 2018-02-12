@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,6 +15,8 @@ namespace RecordAndPlayMouse
     {
         public static event EventHandler MouseAction = delegate { };
 
+        public static Boolean Stopped = false;
+
         public static void Start()
         {
             _hookID = SetHook(_proc);
@@ -24,22 +27,30 @@ namespace RecordAndPlayMouse
             UnhookWindowsHookEx(_hookID);
         }
 
-        public static void MoveCursorAndPerformMouseClick(uint x, uint y, Boolean leftClick)
+        public static void StartPlayback(List<Point> points, List<Boolean> leftClicks, List<long> milisToNext)
         {
-            SetCursorPos(x, y);
-            Thread.Sleep(100);
+            for (int i = 0; i < points.Count; i++)
+            {
+                if (Stopped) return;
 
-            if (leftClick)
-            {
-                mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTDOWN, x, y, 0, UIntPtr.Zero);
-                Thread.Sleep(200);
-                mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTUP, x, y, 0, UIntPtr.Zero);
-            }
-            else
-            {
-                mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_RIGHTDOWN, x, y, 0, UIntPtr.Zero);
-                Thread.Sleep(200);
-                mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_RIGHTUP, x, y, 0, UIntPtr.Zero);
+                uint x = (uint)points[i].X;
+                uint y = (uint)points[i].Y;
+                SetCursorPos(x, y);
+                Thread.Sleep(100);
+                Thread.Sleep((int)milisToNext[i]);
+
+                if (leftClicks[i])
+                {
+                    mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTDOWN, x, y, 0, UIntPtr.Zero);
+                    Thread.Sleep(200);
+                    mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTUP, x, y, 0, UIntPtr.Zero);
+                }
+                else
+                {
+                    mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_RIGHTDOWN, x, y, 0, UIntPtr.Zero);
+                    Thread.Sleep(200);
+                    mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_RIGHTUP, x, y, 0, UIntPtr.Zero);
+                }
             }
         }
 

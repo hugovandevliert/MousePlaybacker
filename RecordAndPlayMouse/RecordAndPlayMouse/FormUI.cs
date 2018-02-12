@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -8,16 +9,16 @@ namespace RecordAndPlayMouse
 {
     public partial class FormUI : Form
     {
-        public const int WM_HOTKEY_MSG_ID = 0x0312;
-
         public static Point MousePoint;
         public static Boolean LeftClick;
 
+        private const int WM_HOTKEY_MSG_ID = 0x0312;
+
         private KeyHandler keyHandler;
-        private System.Timers.Timer mouseClicksTimer;
+        private Stopwatch stopwatch;
         private List<Point> points;
         private List<Boolean> leftClicks;
-        private int index;
+        private List<long> milisToNext;
         private bool started;
 
         public FormUI()
@@ -31,9 +32,8 @@ namespace RecordAndPlayMouse
             started = false;
 
             MouseHook.MouseAction += new EventHandler(MouseClickEvent);
-
-            mouseClicksTimer = new System.Timers.Timer(1000);
-            mouseClicksTimer.Elapsed += new System.Timers.ElapsedEventHandler(PlaceCursorAndPerformClick);
+           
+            stopwatch = new Stopwatch();
         }
 
         private void HandleHotkey()
@@ -51,17 +51,17 @@ namespace RecordAndPlayMouse
         private void StartPlayback()
         {
             MouseHook.Stop();
-            mouseClicksTimer.Start();
             this.WindowState = FormWindowState.Minimized;
             started = true;
+            MouseHook.Stopped = false;
+            MouseHook.StartPlayback(points, leftClicks, milisToNext);
         }
 
         private void StopPlayback()
         {
-            mouseClicksTimer.Stop();
+            MouseHook.Stopped = true;
             this.WindowState = FormWindowState.Normal;
             started = false;
-            index = 0;
         }
 
         protected override void WndProc(ref Message m)
@@ -73,33 +73,21 @@ namespace RecordAndPlayMouse
             base.WndProc(ref m);
         }
 
-        private void PlaceCursorAndPerformClick(object sender, EventArgs e)
-        {
-            if (index >= points.Count)
-            {
-                index = 0;
-            }
-
-            uint x = (uint)points[index].X;
-            uint y = (uint)points[index].Y;
-            Boolean leftClick = leftClicks[index];
-            MouseHook.MoveCursorAndPerformMouseClick(x, y, leftClick);
-
-            index++;
-        }
-
         private void MouseClickEvent(object sender, EventArgs e)
         {
+            milisToNext.Add(stopwatch.ElapsedMilliseconds);
             points.Add(MousePoint);
             leftClicks.Add(LeftClick);
+            stopwatch.Restart();
         }
 
         private void BtnRecord_Click(object sender, EventArgs e)
         {
             points = new List<Point>();
             leftClicks = new List<Boolean>();
-            index = 0;
+            milisToNext = new List<long>();
             MouseHook.Start();
+            stopwatch.Restart();
         }
     }
 }
