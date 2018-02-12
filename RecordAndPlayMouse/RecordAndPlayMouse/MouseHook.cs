@@ -24,12 +24,23 @@ namespace RecordAndPlayMouse
             UnhookWindowsHookEx(_hookID);
         }
 
-        public static void MoveCursorAndPerformMouseClick(uint x, uint y)
+        public static void MoveCursorAndPerformMouseClick(uint x, uint y, Boolean leftClick)
         {
             SetCursorPos(x, y);
-            mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTDOWN, x, y, 0, UIntPtr.Zero);
-            Thread.Sleep(200);
-            mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTUP, x, y, 0, UIntPtr.Zero);
+            Thread.Sleep(100);
+
+            if (leftClick)
+            {
+                mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTDOWN, x, y, 0, UIntPtr.Zero);
+                Thread.Sleep(200);
+                mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTUP, x, y, 0, UIntPtr.Zero);
+            }
+            else
+            {
+                mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_RIGHTDOWN, x, y, 0, UIntPtr.Zero);
+                Thread.Sleep(200);
+                mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_RIGHTUP, x, y, 0, UIntPtr.Zero);
+            }
         }
 
         private static LowLevelMouseProc _proc = HookCallback;
@@ -37,6 +48,8 @@ namespace RecordAndPlayMouse
 
         private const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
         private const uint MOUSEEVENTF_LEFTUP = 0x0004;
+        private const uint MOUSEEVENTF_RIGHTDOWN = 0x0008;
+        private const uint MOUSEEVENTF_RIGHTUP = 0x0010;
         private const uint MOUSEEVENTF_ABSOLUTE = 0x8000;
 
         private static IntPtr SetHook(LowLevelMouseProc proc)
@@ -57,8 +70,19 @@ namespace RecordAndPlayMouse
                 MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
                 FormUI.MousePoint.X = hookStruct.pt.x;
                 FormUI.MousePoint.Y = hookStruct.pt.y;
+                FormUI.LeftClick = true;
                 MouseAction(null, new EventArgs());
             }
+
+            if (nCode >= 0 && MouseMessages.WM_RBUTTONDOWN == (MouseMessages)wParam)
+            {
+                MSLLHOOKSTRUCT hookStruct = (MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
+                FormUI.MousePoint.X = hookStruct.pt.x;
+                FormUI.MousePoint.Y = hookStruct.pt.y;
+                FormUI.LeftClick = false;
+                MouseAction(null, new EventArgs());
+            }
+
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
         }
 

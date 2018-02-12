@@ -11,11 +11,13 @@ namespace RecordAndPlayMouse
         public const int WM_HOTKEY_MSG_ID = 0x0312;
 
         public static Point MousePoint;
+        public static Boolean LeftClick;
 
         private KeyHandler keyHandler;
         private System.Timers.Timer mouseClicksTimer;
         private List<Point> points;
-        private int pointsIndex;
+        private List<Boolean> leftClicks;
+        private int index;
         private bool started;
 
         public FormUI()
@@ -59,7 +61,7 @@ namespace RecordAndPlayMouse
             mouseClicksTimer.Stop();
             this.WindowState = FormWindowState.Normal;
             started = false;
-            pointsIndex = 0;
+            index = 0;
         }
 
         protected override void WndProc(ref Message m)
@@ -73,27 +75,30 @@ namespace RecordAndPlayMouse
 
         private void PlaceCursorAndPerformClick(object sender, EventArgs e)
         {
-            if (pointsIndex >= points.Count)
+            if (index >= points.Count)
             {
-                pointsIndex = 0;
+                index = 0;
             }
 
-            uint x = (uint)points[pointsIndex].X;
-            uint y = (uint)points[pointsIndex].Y;
-            MouseHook.MoveCursorAndPerformMouseClick(x, y);
+            uint x = (uint)points[index].X;
+            uint y = (uint)points[index].Y;
+            Boolean leftClick = leftClicks[index];
+            MouseHook.MoveCursorAndPerformMouseClick(x, y, leftClick);
 
-            pointsIndex++;
+            index++;
         }
 
         private void MouseClickEvent(object sender, EventArgs e)
         {
             points.Add(MousePoint);
+            leftClicks.Add(LeftClick);
         }
 
         private void BtnRecord_Click(object sender, EventArgs e)
         {
             points = new List<Point>();
-            pointsIndex = 0;
+            leftClicks = new List<Boolean>();
+            index = 0;
             MouseHook.Start();
         }
     }
