@@ -34,7 +34,8 @@ namespace RecordAndPlayMouse
 
             MouseHook.MouseAction += new EventHandler(MouseClickEvent);
 
-            PlaybackRepeater = new System.Timers.Timer(TimeSpan.FromSeconds((double)nudSecondsRepeat.Value).TotalMilliseconds);
+            PlaybackRepeater = new System.Timers.Timer();
+            Console.WriteLine(TimeSpan.FromSeconds((double)nudSecondsRepeat.Value).TotalMilliseconds);
             PlaybackRepeater.Elapsed += new System.Timers.ElapsedEventHandler(RepeatPlayback);
             stopwatch = new Stopwatch();
         }
@@ -63,6 +64,7 @@ namespace RecordAndPlayMouse
             MouseHook.Stopped = false;
             this.WindowState = FormWindowState.Minimized;
             started = true;
+            PlaybackRepeater.Interval = TimeSpan.FromSeconds((double)nudSecondsRepeat.Value).TotalMilliseconds;
             MouseHook.StartPlayback(points, leftClicks, milisToNext);
         }
 

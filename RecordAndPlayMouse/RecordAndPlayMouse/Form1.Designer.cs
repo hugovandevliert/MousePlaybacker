@@ -128,7 +128,6 @@ namespace RecordAndPlayMouse
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "FormUI";
             this.ShowIcon = false;
             this.Text = "MouseClicker";
