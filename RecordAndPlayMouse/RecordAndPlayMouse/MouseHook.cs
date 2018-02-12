@@ -52,6 +52,8 @@ namespace RecordAndPlayMouse
                     mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_RIGHTUP, x, y, 0, UIntPtr.Zero);
                 }
             }
+
+            FormUI.PlaybackRepeater.Start();
         }
 
         private static LowLevelMouseProc _proc = HookCallback;

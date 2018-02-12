@@ -11,6 +11,7 @@ namespace RecordAndPlayMouse
     {
         public static Point MousePoint;
         public static Boolean LeftClick;
+        public static System.Timers.Timer PlaybackRepeater;
 
         private const int WM_HOTKEY_MSG_ID = 0x0312;
 
@@ -32,7 +33,9 @@ namespace RecordAndPlayMouse
             started = false;
 
             MouseHook.MouseAction += new EventHandler(MouseClickEvent);
-           
+
+            PlaybackRepeater = new System.Timers.Timer(TimeSpan.FromSeconds((double)nudSecondsRepeat.Value).TotalMilliseconds);
+            PlaybackRepeater.Elapsed += new System.Timers.ElapsedEventHandler(RepeatPlayback);
             stopwatch = new Stopwatch();
         }
 
@@ -48,12 +51,18 @@ namespace RecordAndPlayMouse
             }
         }
 
+        private void RepeatPlayback(object sender, EventArgs e)
+        {
+            PlaybackRepeater.Stop();
+            MouseHook.StartPlayback(points, leftClicks, milisToNext);
+        }
+
         private void StartPlayback()
         {
             MouseHook.Stop();
+            MouseHook.Stopped = false;
             this.WindowState = FormWindowState.Minimized;
             started = true;
-            MouseHook.Stopped = false;
             MouseHook.StartPlayback(points, leftClicks, milisToNext);
         }
 
@@ -61,6 +70,7 @@ namespace RecordAndPlayMouse
         {
             MouseHook.Stopped = true;
             this.WindowState = FormWindowState.Normal;
+            PlaybackRepeater.Stop();
             started = false;
         }
 

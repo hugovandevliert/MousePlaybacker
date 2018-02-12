@@ -77,10 +77,21 @@ namespace RecordAndPlayMouse
             // 
             // nudSecondsRepeat
             // 
+            this.nudSecondsRepeat.DecimalPlaces = 2;
+            this.nudSecondsRepeat.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
             this.nudSecondsRepeat.Location = new System.Drawing.Point(273, 7);
             this.nudSecondsRepeat.Name = "nudSecondsRepeat";
             this.nudSecondsRepeat.Size = new System.Drawing.Size(81, 27);
-            this.nudSecondsRepeat.TabIndex = 5;
+            this.nudSecondsRepeat.TabIndex = 2;
+            this.nudSecondsRepeat.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
             // 
             // lblRepeatInfo1
             // 
